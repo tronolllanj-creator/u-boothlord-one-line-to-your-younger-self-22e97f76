@@ -2,34 +2,37 @@ import os
 import sys
 
 
-def main() -> None:
-    """Write one line to your younger self to entry.txt."""
+def main() -> int:
+    """Write one honest line to my younger self."""
 # Entry validated: output is 1-200 chars, one line, deterministic.
-    LINE = "You'll stay in that job years past its welcome just to say you didn't quit, and the bill comes due in the person you become while waiting — smaller, quieter, already replaced.\n"
-    content = LINE
+    LINE = "You stopped calling Marcus after his divorce because you didn't know what to say, and the silence you called respect became the loudest thing between you — he died wondering if you still cared."
+    content = LINE + "\n"
 
+    # Validation
     if not (1 <= len(content) <= 200 and content.strip()):
-        raise ValueError("content must be 1-200 chars including newline, not only whitespace, exactly one line")
-    if content.count('\n') != 1 or not content.endswith('\n'):
-        raise ValueError("content must contain exactly one line ending with newline")
+        raise ValueError("content must be 1-200 chars including newline, not only whitespace")
+    if content.count("\n") != 1 or content.rstrip("\n").count("\n") != 0:
+        raise ValueError("content must contain exactly one line")
 
-    output_dir = os.environ.get('MAKEFUN_OUTPUT_DIR', '/output')
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, 'entry.txt')
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "entry.txt")
 
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
 
-    if output_dir != '/output':
+    # Mirror to /output if different
+    if os.path.abspath(out_dir) != os.path.abspath("/output"):
         try:
-            os.makedirs('/output', exist_ok=True)
-            with open('/output/entry.txt', 'w', encoding='utf-8') as f:
+            os.makedirs("/output", exist_ok=True)
+            with open("/output/entry.txt", "w", encoding="utf-8") as f:
                 f.write(content)
         except Exception:
             pass
 
-    print(f"{output_path} {len(content)}")
+    print(f"{out_path} {len(content)}")
+    return 0
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    sys.exit(main())
